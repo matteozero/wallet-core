@@ -23,13 +23,41 @@
 
 #include <TrezorCrypto/rand.h>
 
-#include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
+
+#if defined(__wasi__)
+#include <wasi/api.h>
+#else
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
+#endif
 
 // [wallet-core]
+#if defined(__wasi__)
+
+// WASI has no /dev/urandom; get entropy directly via the wasi_snapshot_preview1
+// random_get syscall, which every WASI host (wasmtime, wasm_run, etc.) implements.
+uint32_t __attribute__((weak)) random32(void) {
+    uint8_t buf[4];
+    if (__wasi_random_get(buf, sizeof(buf)) != 0) {
+        abort();  // Critical: cannot proceed without random source
+    }
+    uint32_t result;
+    memcpy(&result, buf, sizeof(result));
+    return result;
+}
+
+void __attribute__((weak)) random_buffer(uint8_t *buf, size_t len) {
+    if (__wasi_random_get(buf, len) != 0) {
+        abort();  // Critical: cannot proceed without random source
+    }
+}
+
+#else
+
 uint32_t __attribute__((weak)) random32(void) {
     int randomData = open("/dev/urandom", O_RDONLY);
     if (randomData < 0) {
@@ -57,3 +85,5 @@ void __attribute__((weak)) random_buffer(uint8_t *buf, size_t len) {
         abort();  // Critical: failed to read random data
     }
 }
+
+#endif

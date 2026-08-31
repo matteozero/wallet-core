@@ -1,0 +1,23 @@
+Single-threaded WASI (wasm32-wasip1, no wasi-threads) libc++ doesn't define
+std::mutex at all -- <mutex> compiles, but the class itself is compiled out
+under _LIBCPP_HAS_NO_THREADS. Make protobuf's internal WrappedMutex a no-op
+in that configuration instead of requiring std::mutex, mirroring what
+Emscripten's non-pthread libc++ already does for the browser/Node wasm build.
+
+--- a/protobuf-3.20.3/src/google/protobuf/stubs/mutex.h
++++ b/protobuf-3.20.3/src/google/protobuf/stubs/mutex.h
+@@ -132,6 +132,14 @@
+   CallOnceInitializedMutex<CriticalSectionLock> mu_{};
+ #elif defined(_WIN32)
+   CallOnceInitializedMutex<std::mutex> mu_{};
++#elif defined(_LIBCPP_HAS_NO_THREADS)
++  // Single-threaded WASI (no wasi-threads): libc++ doesn't provide
++  // std::mutex at all in this configuration, so lock/unlock are no-ops.
++  struct NoopMutex {
++    void lock() {}
++    void unlock() {}
++  };
++  NoopMutex mu_{};
+ #else
+   std::mutex mu_{};
+ #endif

@@ -51,6 +51,14 @@ function download_protobuf() {
         curl -fSsOL https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-java-$PROTOBUF_VERSION.tar.gz
     fi
     tar xzf protobuf-java-$PROTOBUF_VERSION.tar.gz
+
+    # Single-threaded WASI's libc++ has no std::mutex at all; harmless no-op
+    # elsewhere (only takes effect under _LIBCPP_HAS_NO_THREADS). Needed to
+    # build the full protobuf runtime for a wasm32-wasip1 (WASI) target.
+    PATCH="$ROOT/cmake/patches/protobuf-wasi-singlethread-mutex.patch"
+    if ! grep -q "_LIBCPP_HAS_NO_THREADS" protobuf-$PROTOBUF_VERSION/src/google/protobuf/stubs/mutex.h; then
+        patch -p1 < "$PATCH"
+    fi
 }
 
 download_gtest

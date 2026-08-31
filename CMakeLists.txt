@@ -10,6 +10,17 @@ if (NOT ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
     message(FATAL_ERROR "You should use clang compiler")
 endif ()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "WASI")
+    # Build with e.g. -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk.cmake
+    # for a standalone WASI module (wasmtime, wasm_run, etc.), as opposed to the
+    # Emscripten-based browser/Node target under wasm/.
+    message(STATUS "WASI build enabled")
+    # WASI has no mmap/signal/process-clock syscalls; link the emulation shims
+    # wasi-libc ships for the handful of dependencies (e.g. scrypt) that need them.
+    add_compile_definitions(_WASI_EMULATED_MMAN _WASI_EMULATED_SIGNAL _WASI_EMULATED_PROCESS_CLOCKS)
+    add_link_options(-lwasi-emulated-mman -lwasi-emulated-signal -lwasi-emulated-process-clocks)
+endif ()
+
 if ("$ENV{PREFIX}" STREQUAL "")
     set(PREFIX "${CMAKE_SOURCE_DIR}/build/local")
 else ()
@@ -33,7 +44,10 @@ add_subdirectory(trezor-crypto)
 set(WALLET_CORE_RS_LIB libwallet_core_rs.a)
 
 set(WALLET_CORE_BINDGEN ${WALLET_CORE_RS_TARGET_DIR}/release/${WALLET_CORE_RS_LIB})
-if (TW_COMPILE_WASM)
+if (CMAKE_SYSTEM_NAME STREQUAL "WASI")
+    # cargo build --target wasm32-wasip1 --release --lib (in rust/)
+    set(WALLET_CORE_BINDGEN ${WALLET_CORE_RS_TARGET_DIR}/wasm32-wasip1/release/${WALLET_CORE_RS_LIB})
+elseif (TW_COMPILE_WASM)
     message(STATUS "Wasm build enabled")
     set(WALLET_CORE_BINDGEN ${WALLET_CORE_RS_TARGET_DIR}/wasm32-unknown-emscripten/release/${WALLET_CORE_RS_LIB})
     add_subdirectory(wasm)
