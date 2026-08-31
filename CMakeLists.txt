@@ -11,14 +11,21 @@ if (NOT ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "WASI")
-    # Build with e.g. -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk.cmake
+    # Build with e.g. -DCMAKE_TOOLCHAIN_FILE=<wasi-sdk>/share/cmake/wasi-sdk-p1.cmake
     # for a standalone WASI module (wasmtime, wasm_run, etc.), as opposed to the
-    # Emscripten-based browser/Node target under wasm/.
+    # Emscripten-based browser/Node target under wasm/. Requires wasi-sdk-33+
+    # (LLVM 22+) for its exception-enabled sysroot -- see
+    # https://github.com/WebAssembly/wasi-sdk/blob/main/CppExceptions.md
     message(STATUS "WASI build enabled")
     # WASI has no mmap/signal/process-clock syscalls; link the emulation shims
     # wasi-libc ships for the handful of dependencies (e.g. scrypt) that need them.
     add_compile_definitions(_WASI_EMULATED_MMAN _WASI_EMULATED_SIGNAL _WASI_EMULATED_PROCESS_CLOCKS)
     add_link_options(-lwasi-emulated-mman -lwasi-emulated-signal -lwasi-emulated-process-clocks)
+    # Real C++ exceptions (used throughout src/) need the WebAssembly
+    # exception-handling proposal, not just -fexceptions. The consuming
+    # WASI host must run with it enabled too (e.g. `wasmtime --wasm exceptions`).
+    add_compile_options(-fwasm-exceptions -mllvm -wasm-use-legacy-eh=false)
+    add_link_options(-fwasm-exceptions -lunwind)
 endif ()
 
 if ("$ENV{PREFIX}" STREQUAL "")
