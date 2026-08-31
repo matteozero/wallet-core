@@ -3,6 +3,7 @@
 // Copyright © 2017 Trust Wallet.
 
 #include "TransactionInput.h"
+#include <iterator>
 
 #include "../BinaryCoding.h"
 

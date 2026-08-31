@@ -4,6 +4,7 @@
 
 #include "Transaction.h"
 #include <nlohmann/json.hpp>
+#include <iterator>
 #include "Base64.h"
 
 namespace TW::Filecoin {

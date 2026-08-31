@@ -13,6 +13,7 @@
 #include "../Bitcoin/SignatureVersion.h"
 
 #include <cassert>
+#include <iterator>
 
 using namespace TW;
 namespace TW::Verge {

@@ -3,6 +3,7 @@
 // Copyright © 2017 Trust Wallet.
 
 #include "Signer.h"
+#include <iterator>
 #include "Hash.h"
 #include "HexCoding.h"
 #include "Transaction.h"

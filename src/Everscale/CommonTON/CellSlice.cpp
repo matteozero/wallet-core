@@ -5,6 +5,7 @@
 #include "CellSlice.h"
 
 #include <cassert>
+#include <iterator>
 
 #include "BinaryCoding.h"
 

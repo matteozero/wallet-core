@@ -9,6 +9,7 @@
 #include "../uint256.h"
 
 #include <algorithm>
+#include <iterator>
 #include <nlohmann/json.hpp>
 #include <google/protobuf/util/json_util.h>
 

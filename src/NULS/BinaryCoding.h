@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Address.h"
+#include <iterator>
 #include "../BinaryCoding.h"
 #include "../HexCoding.h"
 #include "../proto/NULS.pb.h"

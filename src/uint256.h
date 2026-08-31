@@ -7,6 +7,7 @@
 #include "Data.h"
 
 #include <boost/lexical_cast.hpp>
+#include <iterator>
 #include <boost/multiprecision/cpp_int.hpp>
 
 namespace TW {

@@ -9,6 +9,7 @@
 #include "../Data.h"
 
 #include <cassert>
+#include <iterator>
 
 using namespace TW;
 namespace TW::BitcoinDiamond {

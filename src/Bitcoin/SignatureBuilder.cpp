@@ -3,6 +3,7 @@
 // Copyright © 2017 Trust Wallet.
 
 #include "SignatureBuilder.h"
+#include <iterator>
 #include "SigHashType.h"
 #include "TransactionInput.h"
 #include "TransactionOutput.h"

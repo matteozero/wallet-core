@@ -5,6 +5,7 @@
 #include "Cell.h"
 
 #include <cassert>
+#include <iterator>
 #include <cstring>
 #include <map>
 #include <optional>

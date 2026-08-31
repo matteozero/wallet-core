@@ -4,6 +4,7 @@
 
 #include "Signer.h"
 #include <TrezorCrypto/ecdsa.h>
+#include <iterator>
 
 #include "Address.h"
 #include "BinaryCoding.h"

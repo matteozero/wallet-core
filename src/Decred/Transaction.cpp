@@ -8,6 +8,7 @@
 #include "../BinaryCoding.h"
 
 #include <cassert>
+#include <iterator>
 
 namespace TW::Decred {
 

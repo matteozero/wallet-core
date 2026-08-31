@@ -3,6 +3,7 @@
 // Copyright © 2017 Trust Wallet.
 
 #include "Staking.h"
+#include <iterator>
 #include "Data.h"
 #include "HexCoding.h"
 using namespace TW;

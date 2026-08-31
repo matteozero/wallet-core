@@ -10,6 +10,7 @@
 #include "../proto/Bitcoin.pb.h"
 #include  "../HexCoding.h"
 #include <TrustWalletCore/TWCoinType.h>
+#include <iterator>
 
 #include <algorithm>
 

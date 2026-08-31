@@ -5,6 +5,7 @@
 #include "AddressV3.h"
 #include "AddressV2.h"
 #include <TrustWalletCore/TWCoinType.h>
+#include <iterator>
 #include "../Bech32.h"
 #include "../Base32.h"
 #include "../HexCoding.h"

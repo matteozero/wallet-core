@@ -3,6 +3,7 @@
 // Copyright © 2017 Trust Wallet.
 
 #include <TrustWalletCore/TWData.h>
+#include <iterator>
 #include <TrustWalletCore/TWString.h>
 #include <TrezorCrypto/memzero.h>
 #include "Data.h"
