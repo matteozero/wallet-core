@@ -64,6 +64,8 @@ add_library(TrezorCrypto
 if (EMSCRIPTEN)
     message(STATUS "Skip building trezor-crypto/tests")
     set(TW_WARNING_FLAGS ${TW_WARNING_FLAGS} -Wno-bitwise-instead-of-logical)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "WASI")
+    message(STATUS "Skip building trezor-crypto/tests (WASI)")
 else ()
     if(NOT ANDROID AND NOT IOS_PLATFORM AND NOT TW_COMPILE_JAVA AND NOT FLUTTER)
         add_subdirectory(crypto/tests)
